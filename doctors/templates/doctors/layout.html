@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'doctors/css/doctor.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+    <script src="{% static 'doctors/js/doctor.js' %}"></script>
+    <title>{% block title %} Doctor {% endblock %}</title>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">COVID-H</a><span class="text-muted">(Doctor)</span>
+        
+        <div class="navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(Doctor)</span></a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{% url 'user_appointment' %}"></a>
+                </li>
+                {% endif %}
+              </ul>
+              <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a href="{% url 'user_logout' %}" class="nav-link">logout</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'doctor_login' %}">login</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'doctor_register' %}" class="nav-link">register</a>
+                </li>   
+                {% endif %}
+              </ul>
+        </div>
+    </nav>
+    <script id="selected-patient-list" type="text/x-handlebars-template">
+        {% verbatim %}
+            <ul class="list-group">
+                {{#each patients as |patient|}}
+                    <li class="list-group-item"><a href="{% url 'doctor_patient' patient.id %}">{{patient}}</a><span class="text-muted float-right">{{patient.last_visit}}</span></li>
+                {{/each}}
+            </ul>
+        {% endverbatim %}
+    </script>
+    <script id="selected-appointment-list" type="text/x-handlebars-template">
+        {% verbatim %}
+            <ul class="list-group">
+                {{#each appointments as |appointment|}}
+                    <li class="list-group-item"><a href="{% url 'doctor_patient' appointment.get_patient.id %}">{{appointment.get_patient}}</a><span class="text-muted float-right">{{appointment.date}}</span></li>
+                {{/each}}
+            </ul>
+        {% endverbatim %}
+    </script>
+</head>
+<body>
+    {% block body %}
+
+    {% endblock %}
+</body>
+</html>

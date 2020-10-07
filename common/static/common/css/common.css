@@ -1,0 +1,41 @@
+body {
+    text-align: center;
+}
+
+body > img {
+    display: inline-block;
+}
+
+#welcome {
+    display: block;
+    margin-bottom: 80px;
+}
+
+#welcome img {
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+#container, #container1 {
+    border-radius: 10px;
+    display: inline-block;
+    padding: 20px;
+}
+
+#container {
+    background-color: green;
+    color: white;
+}
+
+#container1 a {
+    width: 100%;
+}
+
+#container a {
+    width: 100%;
+}
+
+#container1 {
+    background-color: white;
+    border: 1px solid black;
+}

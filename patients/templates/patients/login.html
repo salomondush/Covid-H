@@ -1,0 +1,16 @@
+{% extends "patients/layout.html" %}
+
+{% block body %}
+<div class="login">
+    <form id="login" class="form-group" action="{% url 'user_login' %}" method="post">
+        {% csrf_token %}
+        <p style="font-size: x-large;">Login</p>
+        <input name="username" class="form-control" type="text" placeholder="Username" required>
+        <input name="password" type="password" class="form-control" placeholder="Password" required>
+        <div class="error">
+
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+{% endblock %}

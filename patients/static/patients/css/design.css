@@ -1,0 +1,231 @@
+/*login page css*/
+.error {
+    color: red;
+}
+
+.login {
+    padding-top: 70px;
+    text-align: center;
+}
+.login form {
+    display: inline-block;
+    width: 30%;
+    margin: 20px;
+}  
+
+#login button {
+    width: 100%;
+}  
+
+/*register css*/
+
+#register-form {
+    text-align: center;
+}
+.register {
+    width: 50%;
+    display: inline-block;
+    padding-top: 100px;
+}
+.register button{
+    width: 100%;
+    margin-top: 10px;
+}
+
+/*Index page CSS*/
+.modal-body {
+    text-align: left;
+}
+
+.container {
+    text-align: center;
+    border-radius: 10px;
+}
+
+.four > div {
+    background-color: white;
+    border-radius: 10px;
+    color: black;
+   
+    margin: 10px;
+}
+
+.info > div {
+    height: 10vh;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 18px;
+}
+
+.info div:hover {
+    opacity: 0.8;
+}
+
+.container {
+    background-color: rgb(237, 245, 239);
+}
+
+.header {
+    background-color: white;;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+}
+
+
+/*check-up page css*/
+.container {
+    background-color: rgb(237, 245, 239);
+    border-radius: 10px;
+}
+
+.row > div {
+    background-color: white;
+    border-radius: 10px;
+    color: black;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.head {
+    padding: 10px;
+    border-radius: 10px;
+    
+}
+
+.center {
+    text-align: center;
+}
+
+#complication {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.l, .r {
+    width: 50%;
+}
+
+/*appointment page css*/
+body {
+    background-color: rgb(209, 230, 214);
+}
+#checkup-appointment {
+    background-color: rgb(240, 247, 244);
+    margin: 20px;
+    border-radius: 10px;
+    border: 5px solid white;
+}
+#person {
+    display: block;
+    background-color: white;
+    border-radius: 10px;
+    height: 80vh;
+    margin-left: 20px;
+}
+
+#symptoms div {
+    background-color: white;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#appointment-doctor, #appointment, #complications div {
+    background-color: white;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#appointment-doctor:hover {
+    opacity: 0.8;
+}
+
+#information {
+    padding-top: 20px;
+}
+.center {
+    text-align: center;
+}
+
+.add {
+    width: 100%;
+}
+
+table {
+    background-color: white;
+    border-radius: 10px;
+}
+
+/*docindex page css */
+#checkup-appointment {
+    background-color: rgb(240, 247, 244);
+    margin: 20px;
+    border-radius: 10px;
+    border: 5px solid white;
+}
+#person {
+    display: block;
+    background-color: white;
+    border-radius: 10px;
+    height: 80vh;
+    margin-left: 20px;
+}
+
+#symptoms div {
+    background-color: white;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.near-app, #appointment-doctor, #appointment {
+    background-color: white;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#appointment-doctor:hover {
+    opacity: 0.8;
+}
+
+#information {
+    padding-top: 20px;
+}
+.center {
+    text-align: center;
+}
+
+.add {
+    width: 100%;
+}
+
+table {
+    background-color: white;
+    border-radius: 10px;
+}
+
+/*results page css*/
+#results {
+    background-color: rgb(240, 247, 244);
+    margin: 20px;
+    border-radius: 10px;
+    border: 5px solid white;
+}
+
+#results div {
+    background-color: white;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+.center {
+    text-align: center;
+}
+
+#results .list-group {
+    margin: 10px;
+}

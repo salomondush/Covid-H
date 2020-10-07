@@ -1,0 +1,13 @@
+Fever,20,most_common
+Dry Cough,20,most_common
+Tiredness,20,most_common
+Aches and pains,1.4,less_common
+Sore throat,1.4,less_common
+Diarrhea,1.4,less_common
+Conjunctivitis,1.4,less_common
+headache,1.4,less_common
+Loss of taste or smell,1.4,less_common
+"a rash on skin, or discolouration of fingers or toes",1.4,less_common
+Difficulty breathing or shortness of breath,10,serious
+Chest pain or pressure,10,serious
+Loss of speech or movement,10,serious

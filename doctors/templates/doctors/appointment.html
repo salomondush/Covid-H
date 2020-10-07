@@ -1,0 +1,156 @@
+<div class="appointment-page">
+    <div id="checkup-appointment">
+        <div id="appointment" class="col-lg-12">
+            <h5><b>Current Patient</b></h5>   
+            <div type="button" data-toggle="modal" data-target="#exampleModalLong0" id="appointment-doctor" class='border bg-primary' style="color: white"><b>{{patient.doctor}}(<span class="text-muted">Click for details</span>)</b></div>   
+            <!--modal-->
+            <div class="modal fade" id="exampleModalLong0" aria-labelledby="exampleModalLongTitle" aria-hidden="true" role="tab" tabindex="-1">
+                <div class="modal-dialog" role="document">  
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Appointment Doctor</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="doctor" class="center">
+                                <img src="u.png" alt="" width="75" height="75">
+                                <article><b>Dr. {{doctor}}</b></article>
+                                <div class="text-muted">Age: {{doctor_age}}</div>
+                            </div>
+                            <hr>
+                            <div id="doctor-information">
+                                <h5>Information:</h5>
+                                <p><b>Email:</b> <span class="text-muted">{{doctor.user.email}}</span></p>
+                                <p><b>Phone number:</b>  <span class="text-muted">{{doctor.user.phone}}</span></p>
+                                <p><b>ID:</b>  <span class="text-muted">{{doctor.id}}</span></p>
+                                <p><b>Hospital</b>  <span class="text-muted">{{doctor.hospital}}</span></p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="person" class="col-lg-4">
+                <div id="user" class="center">
+                    <img src="u.png" alt="" width="75" height="75">
+                    <article><b>{{patient}}</b></article>
+                    <div class="text-muted">Age: {{patient_age}}</div>
+                </div>
+                <hr>
+                <div id="information">
+                    <h5>Information:</h5>
+                    {% if patient.condition == "Critical" %} <!--This is no final-->
+                        <p><b>Condition:</b> <span class="text-muted badge badge-danger">{{patient.condition}}</span></p>
+                    {% endif %}
+                    {% if patient.condition == "Mild" %}
+                        <p><b>Condition:</b> <span class="text-muted badge badge-primary">{{patient.condition}}</span></p>
+                    {% else %}
+                        <p><b>Condition:</b> <span class="text-muted badge badge-primary">{{patient.condition}}</span></p>
+                    {% endif %}
+                    <p><b>Progress:</b> <span class="text-muted badge badge-dark">{{patient.progress}}</span></p>
+                    <p><b>Email:</b> <span class="text-muted">{{patient.user.email}}</span></p>
+                    <p><b>Phone number:</b>  <span class="text-muted">{{patient.user.phone}}</span></p>
+                    <p><b>Gender:</b> <span class="text-muted"></span></p>
+                    <p><b>Patient ID:</b>  <span class="text-muted">{{patient.id}}</span></p>
+                    <p><b>Initial Appointment:</b>  <span class="text-muted">{{patient.initial_date}}</span></p>
+                    <p><b>Last Visit:</b>  <span class="text-muted">{{patient.last_visit}}</span></p>
+                    <p><b>Appointment Date:</b>  <span class="text-muted">{{appointment.date}}</span></p>
+                </div>
+            </div>
+            <div id="details" class="col-lg-7">
+                <div id="symptoms" class="row">
+                    <div class="col-lg-4 bg-primary">
+                        <p style="color: white">Most common</p>
+                        <ul class="list-group">
+                            {% for symptom in common %}
+                                <li class="list-group-item">{{symptom}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 bg-primary">
+                        <p style="color: white">Less common</p>
+                        <ul class="list-group">
+                            {% for symptom in less_common %}
+                                <li class="list-group-item">{{symptom}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 bg-primary">
+                        <p style="color: white">Serious</p>
+                        <ul class="list-group">
+                            {% for symptom in serious %}
+                                <li class="list-group-item">{{symptom}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <p class="center"><b>Complication</b></p>
+                <div id="complications" class="row">
+                    {% for complication in patient.complications %}
+                        <div class="col-lg-3">
+                            <p>- {{complication}}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div id="add-complication">
+                    <div class="col-lg-12">
+                        <button type="button" class="btn btn-success add" data-toggle="modal" data-target="#exampleModalLong">+ add a Complication</button>
+                    </div>
+                    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Add a treatment</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                <form action="{% url 'doctor_patient' patient.id %}" method='post'>
+                                    {% csrf_token %}
+                                    <select name="complication">
+                                        {% for complication in complications %}
+                                            <option value="{{complication}}">complication</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-success add">+ Treatment</button>
+                                </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Onogoing treatments do not work currently -->
+                <p class="center"><b>Privious appointments</b></p>
+                <!--Modal-->
+                <div style="overflow-y: scroll;" id="appointment-dates"> 
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in old_appointements %}
+                                <tr>
+                                    <td>{{appointment.doctor}}</td>
+                                    <td>{{appointment.date}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

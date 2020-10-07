@@ -1,0 +1,53 @@
+{% extends "doctors/layout.html" %}
+
+{% block body %}
+<div id="checkup-appointment">
+    <div id="appointment" class="col-lg-12">
+        <h5><b>{{hospital}}</b></h5>    
+    </div>
+    <div class="row">
+        <div id="person" class="col-lg-4">
+            <div id="user" class="center">
+                {% load static %}
+                <img src="{% static 'doctors/img/u.png' %}" alt="" width="75" height="75">
+                <article><b>Dr. {{doctor}}</b></article>
+                <div class="text-muted">Age: {{age}}</div>
+            </div>
+            <hr>
+            <div id="doctor-information">
+                <h5>Information:</h5>
+                <p><b>Email:</b> <span class="text-muted">{{doctor.user.email}}</span></p>
+                <p><b>Phone number:</b>  <span class="text-muted">{{doctor.user.phone}}</span></p>
+                <p><b>ID:</b>  <span class="text-muted">{{doctor.id}}</span></p>
+                <p><b>Hospital:</b>  <span class="text-muted">{{hospital}}</span></p>
+                <p><b>location:</b>  <span class="text-muted">{{hospital.location}}</span></p>
+            </div>
+        </div>
+        <div id="details" class="col-lg-7">
+            <div id="symptoms" class="row">
+                <div class="col-lg-4 bg-primary">
+                    <p style="color: white">Appointments</p>
+                    <ul class="list-group">
+                        <li class="list-group-item"><a href="javascript:void(0)"  id="appointments-list">{{appointments_number}}</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 bg-primary">
+                    <p style="color: white">patients</p>
+                    <li class="list-group-item"><a href="javascript:void(0)"  id="patients-list">{{patients_number}}</a></li>
+                </div>
+                <div class="col-lg-3 bg-primary">
+                    <p style="color: white">Recovered</p>
+                    <li class="list-group-item"><a href="javascript:void(0)"  id="recovered-list">{{recovered_number}}</a></li>
+                </div>
+            </div>
+            <div id='near-appointments'> 
+                <!--Area to add lists of selected group-->
+                <div id="selected" class='bg-success near-app text-white center'>Appointments List</div>
+                <div id="selected-list">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends "patients/layout.html" %}
+
+{% block body %}
+<div class="container">
+    <div class="cases">
+        <div id="world-wide">
+            <div class='header'>
+                <h5>World Wide Cases</h5>
+            </div>
+            <div class="row four">
+                <div class="col-lg-4">
+                    Total Cases: <br>
+                    <article>{{ world.TotalConfirmed }}</article><span class="badge badge-primary">(+{{world.NewConfirmed}})</span>
+                </div>
+                <div class="col-lg-4">
+                    Recovered: <br>
+                    <article>{{ world.TotalRecovered}}</article><span class="badge badge-primary">(+{{world.NewRecovered}})</span>
+                </div>
+                <div class="col-lg-3">
+                    Total Deaths: <br>
+                    <article>{{world.TotalDeaths}}</article><span class="badge badge-primary">(+{{world.NewDeaths}})</span>
+                </div>
+            </div>
+           
+        </div>
+        <form id="country-cases-form" action="" class="input-group">
+            {% csrf_token %}
+            <select class="form-control" name="country" id="country-name">
+                {% for country in countries %}
+                    <option value="{{country}}">{{country}}</option>
+                {% endfor %}
+            </select>
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-success">Search</button>
+            </div>
+        </form>
+        <div id="country">
+            <div class='header'>
+                <b id="selected-country-name">{{country.Country}}</b>
+            </div>
+            <div class="row four">
+                <div class="col-lg-4">
+                    Total Cases: <br>
+                    <article id="total-cases">{{ country.TotalConfirmed }}</article><span class="badge badge-primary" id="new-cases">(+{{country.NewConfirmed}})</span>
+                </div>
+                <div class="col-lg-4">
+                    Recovered: <br>
+                    <article id="total-recovered">{{ country.TotalRecovered}}</article><span class="badge badge-primary" id="new-recovered">(+{{country.NewRecovered}})</span>
+                </div>
+                <div class="col-lg-3">
+                    Total Deaths: <br>
+                    <article id="total-deaths">{{country.TotalDeaths}}</article><span class="badge badge-primary" id="new-deaths">(+{{country.NewDeaths}})</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="information">
+        <h6>Corona Virus Information <span class="text-muted">(Click for details)</span></h6>
+        <div class="row info">
+            <div class="col-lg-6 bg-success text-white" type="button" data-toggle="modal" data-target="#exampleModalLong1">
+                Spreading
+            </div>
+            <div class="col-lg-5 bg-success text-white" type="button" data-toggle="modal" data-target="#exampleModalLong2">
+                Prevention
+            </div>
+        </div>
+        <div class="row info">
+            <div class="col-lg-6 bg-success text-white" type="button" data-toggle="modal" data-target="#exampleModalLong3">
+                Treatments
+            </div>
+            <div class="col-lg-5 bg-success text-white" type="button" data-toggle="modal" data-target="#exampleModalLong4">
+                Complications
+            </div>
+        </div>
+         <!-- Modal1 -->
+        <div class="modal fade" id="exampleModalLong1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Spreading</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                       <p>The virus that causes COVID-19 is mainly transmitted through droplets generated when an infected person coughs, sneezes, or exhales.
+                            These droplets are too heavy to hang in the air, and quickly fall on floors or surfaces.</p>
+                        <p>
+                            You can be infected by breathing in the virus if you are within close proximity of someone who has COVID-19, or by touching a 
+                            contaminated surface and then your eyes, nose or mouth. (from who.int)
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <!-- Modal2 -->
+        <div class="modal fade" id="exampleModalLong2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Prevention</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            -	Stay home as much as you can <br>
+                            -	Keep a safe distance (specify) <br>
+                            -	Wash hands often <br>
+                            -	Cover your cough <br>
+                            -	Sick? Call ahead (This will be taken care by the website) <br>
+                            
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <!-- Modal3 -->
+        <div class="modal fade" id="exampleModalLong3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Treatments</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>To date, there are no specific vaccines or medicines for COVID-19. Treatments are under investigation, and will be tested through clinical trials. World Health Organization.</p>
+                        Self care.
+                        
+                        <p>If you feel sick you should rest, drink plenty of fluid, and eat nutritious food. Stay in a separate room from other family members, and use a dedicated bathroom if possible. 
+                        Clean and disinfect frequently touched surfaces.</p>
+                       
+                        <p>Everyone should keep a healthy lifestyle at home. Maintain a healthy diet, sleep, stay active, and make social contact with loved ones through the phone or internet. 
+                        Children need extra love and attention from adults during difficult times. Keep to regular routines and schedules as much as possible.</p>
+                        
+                        <p>It is normal to feel sad, stressed, or confused during a crisis. Talking to people you trust, such as friends and family, can help. If you feel overwhelmed, talk to a health worker or counsellor.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <!-- Modal4 -->
+        <div class="modal fade" id="exampleModalLong4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Complications</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            I.	Cancer <br>
+                            II.	Chronic Kidney Disease
+                            III.	COPD (Chronic Obstructive Pulmonary Disease) <br>
+                            IV.	Immunocompromised state (weakened immune system) from solid organ transplant. <br>
+                            V.	Obesity (body mass index [BMI] of 30 or higher) <br>
+                            VI.	Serious heart conditions, such as heart failure, coronary artery disease, or cardiomyopathies.
+                            VII.	Sickle cell disease. <br>
+                            VIII.	Type 2 diabetes. <br>
+                            IX.	Asthma (moderate-to-severe) <br>
+                            X.	Cerebrovascular disease (affects blood vessels and blood supply to the brain) <br>
+                            XI.	HIV <br>
+                            XII.	Use of corticosteroids. <br>
+                            XIII.	Neurologic conditions, such as dementia. <br>
+                            XIV.	Liver disease. <br>
+                            XV.	Pregnancy. <br>
+                            XVI.	Pulmonary fibrosis (Having damaged or scarred lung tissues) <br>
+                            XVII.	Smoking. <br>
+                            XVIII.	Thalassemia (a type of blood disorder) <br>
+                            XIX.	Type 1 diabetes mellitus. <br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="checkup-button-div">
+        <a class="btn btn-primary text-white" style="width: 100%;" href="{% url 'checkup' %}">Check-up</a>
+    </div>
+    <br>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+/*docindex page css */
+body {
+    background-color: rgb(209, 230, 214);
+}
+
+.row > div {
+    background-color: white;
+    border-radius: 10px;
+    color: black;
+    padding: 10px;
+    margin: 10px;
+}
+
+#checkup-appointment {
+    background-color: rgb(240, 247, 244);
+    margin: 20px;
+    border-radius: 10px;
+    border: 5px solid white;
+}
+#person {
+    display: block;
+    background-color: white;
+    border-radius: 10px;
+    height: 80vh;
+    margin-left: 20px;
+}
+
+#symptoms div {
+    background-color: white;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.near-app, #appointment-doctor, #appointment {
+    background-color: white;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#appointment-doctor:hover {
+    opacity: 0.8;
+}
+
+#information {
+    padding-top: 20px;
+}
+.center {
+    text-align: center;
+}
+
+.add {
+    width: 100%;
+}
+
+table {
+    background-color: white;
+    border-radius: 10px;
+}
+
+/*login page css*/
+.error {
+    color: red;
+}
+
+.login {
+    padding-top: 70px;
+    text-align: center;
+}
+.login form {
+    display: inline-block;
+    width: 30%;
+    margin: 20px;
+}  
+
+#login button {
+    width: 100%;
+}  
+
+/*register css*/
+
+#register-form {
+    text-align: center;
+}
+.register {
+    width: 50%;
+    display: inline-block;
+    padding-top: 100px;
+}
+.register button{
+    width: 100%;
+    margin-top: 10px;
+}

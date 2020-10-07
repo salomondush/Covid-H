@@ -1,0 +1,64 @@
+{% extends "patients/layout.html" %}
+
+{% block body %}
+<div id="register-form">
+    <form action="{% url 'user_register' %}" class="form-group register" method="post">
+        {% csrf_token %}
+        <h4>Register</h4>
+        <div class="form-row">
+            <div class="col-md-4">
+                <label for="firstname">First Name</label>
+                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="first name" required>
+            </div>
+            <div class="col-md-4">
+                <label for="lastname">Last Name</label>
+                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="last name" required>
+            </div>
+            <div class="col-md-4">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-6">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="col-md-3">
+                <label for="phone">Phone Number</label>
+                <input type="number" class="form-control" id="phone" name="phone" placeholer="Phone Number" required>
+            </div>
+            <div class="col-md-3">
+                <label for="birth">Date of Birth</label>
+                <input type="date" class="form-control" id="birth" name="birth" placeholder="Date of Birth" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-6">
+                <label for="country">Country</label>
+                <input type="text" class="form-control" id="country" name="country" value="Rwanda" placeholder="Rwanda" disabled>
+            </div>
+            <div class="col-md-6">
+                <label for="city">City</label>
+                <select class="form-control" name="city" id="city">
+                    <option value="Kicukiro">Kicukiro</option>
+                    <option value="Nyarugenge">Nyarugenge</option>
+                    <option value="Gasaba">Gasabo</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-6">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="col-md-6">
+                <label for="password1">Confirm Password</label>
+                <input type="password" class="form-control" id="password1" placeholer="Confirm Password" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    <p class="text-muted">2020-2021</p>
+</div>
+{% endblock %}

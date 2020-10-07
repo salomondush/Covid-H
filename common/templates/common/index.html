@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'common/css/common.css' %}">
+        <title>Document</title>
+    </head>
+    <body>
+        
+        <div id='welcome'>
+            <img src="{% static 'common/img/c.jpg' %}" width="350" height="150" title='COVIDH logo' alt='COVIDH logo'>
+            <div class='text-muted'>- img from americalatinagenera.org -</div>
+            <p>Welcome to COVIDH. This tool is designed to ensure effective testing and monitoring of COVID-19 <br>
+            patients in order to efficiently reduce the spread of the virus.</p>
+        </div>
+
+        <div id='container' class='col-lg-4 col-sm-6'>
+            <h4>Continue as a patient</h4>
+            <p>Productive patient and symptom monitoring<br>
+            to socialize</p> 
+            <a href="{% url 'user_login' %}" class='btn btn-primary'>Patient</a>
+        </div>
+
+        <div id='container1' class='col-lg-4 col-sm-6'>
+            <h4>Continue as a doctor</h4>
+            <p>One step closer to efficient monitoring of patients<br>
+            <br>
+            </p>
+            <a href="{% url 'doctor_login' %}" class='btn btn-primary'>Doctor</a>
+        </div>
+        <div>
+            <p class="mt-5 mb-3 text-muted">&copy; 2020-2021</p>
+        </div>
+    </body>
+</html>

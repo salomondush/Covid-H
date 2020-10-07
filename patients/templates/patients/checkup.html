@@ -1,0 +1,188 @@
+{% extends 'patients/layout.html' %}
+
+{% block body %}
+<hr>
+<div class="check-up container">
+    <br>
+    <div class="head bg-primary center">
+        <h5 style="color: white">Welcome to COVID-19 screening {{name}}</h5>
+    </div>
+    <hr>
+    <form id="checkup-form" action="{% url 'checkup' %}" method='post'>
+        {% csrf_token %}
+        <div class="symptoms">
+            <p class="center"><b>Most Common</b></p>
+            <div class="row" id="common">
+                <div class="col-lg-4">
+                    <p>1. {{sy1}}</p>
+                    <div class="custom-control custom-radio">
+                        <input name="1" type="radio" id="yes1" class="custom-control-input" value="{{sy1.id}}" required>
+                        <label for="yes1" class="custom-control-label">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input name="1" type="radio" id="no1" class="custom-control-input" value="0" required>
+                        <label for="no1" class="custom-control-label">No</label>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <p>2. {{sy2}}</p>
+                    <div class="custom-control custom-radio">
+                        <input name="2" type="radio" id="yes2" class="custom-control-input" value="{{sy2.id}}" required>
+                        <label for="yes2" class="custom-control-label">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input name="2" type="radio" id="no2" class="custom-control-input" value="0" required>
+                        <label for="no2" class="custom-control-label">No</label>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <p>3. {{sy3}}</p>
+                    <div class="custom-control custom-radio">
+                        <input name="3" type="radio" id="yes3" class="custom-control-input" value="{{sy3.id}}" required>
+                        <label for="yes3" class="custom-control-label">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input name="3" type="radio" id="no3" class="custom-control-input" value="0" required>
+                        <label for="no3" class="custom-control-label">No</label>
+                    </div>
+                </div>
+            </div>
+            <p class="center"><b>Less Common</b></p>
+            <div id="less-common">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <p>4. {{sy4}}</p>
+                        <div class="custom-control custom-radio">
+                            <input name="4" type="radio" id="yes4" class="custom-control-input" value="{{sy4.id}}" required>
+                            <label for="yes4" class="custom-control-label">Yes</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input name="4" type="radio" id="no4" class="custom-control-input" value="0" required>
+                            <label for="no4" class="custom-control-label">No</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <p>5. {{sy5}}</p>
+                        <div class="custom-control custom-radio">
+                            <input name="5" type="radio" id="yes5" class="custom-control-input" value="{{sy5.id}}" required>
+                            <label for="yes5" class="custom-control-label">Yes</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input name="5" type="radio" id="no5" class="custom-control-input" value="0" required>
+                            <label for="no5" class="custom-control-label">No</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <p>6. {{sy6}}</p>
+                        <div class="custom-control custom-radio">
+                            <input name="6" type="radio" id="yes6" class="custom-control-input" value="{{sy6.id}}" required>
+                            <label for="yes6" class="custom-control-label">Yes</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input name="6" type="radio" id="no6" class="custom-control-input" value="0" required>
+                            <label for="no6" class="custom-control-label">No</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <p>7. {{sy7}}</p>
+                        <div class="custom-control custom-radio">
+                            <input name="7" type="radio" id="yes7" class="custom-control-input" value="{{sy7.id}}" required>
+                            <label for="yes7" class="custom-control-label">Yes</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input name="7" type="radio" id="no7" class="custom-control-input" value="0" required> 
+                            <label for="no7" class="custom-control-label">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <p>8. {{sy8}}</p>
+                        <div class="custom-control custom-radio">
+                            <input name="8" type="radio" id="yes8" class="custom-control-input" value="{{sy8.id}}" required>
+                            <label for="yes8" class="custom-control-label">Yes</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input name="8" type="radio" id="no8" class="custom-control-input" value="0" required>
+                            <label for="no8" class="custom-control-label">No</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <p>9. {{sy9}}</p>
+                        <div class="custom-control custom-radio">
+                            <input name="9" type="radio" id="yes9" class="custom-control-input" value="{{sy9.id}}" required>
+                            <label for="yes9" class="custom-control-label">Yes</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input name="9" type="radio" id="no9" class="custom-control-input" value="0" required>
+                            <label for="no9" class="custom-control-label">No</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <p>10. {{sy10}}</p>
+                        <div class="custom-control custom-radio">
+                            <input name="10" type="radio" id="yes10" class="custom-control-input" value="{{sy10.id}}" required>
+                            <label for="yes10" class="custom-control-label">Yes</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input name="10" type="radio" id="no10" class="custom-control-input" value="0" required>
+                            <label for="no10" class="custom-control-label">No</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="center"><b>Serious Symptoms</b></p>
+            <div class="row" id="common">
+                <div class="col-lg-4">
+                    <p>11. {{sy11}}</p>
+                    <div class="custom-control custom-radio">
+                        <input name="11" type="radio" id="yes11" class="custom-control-input" value="{{sy11.id}}" required>
+                        <label for="yes11" class="custom-control-label">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input name="11" type="radio" id="no11" class="custom-control-input" value="0" required>
+                        <label for="no11" class="custom-control-label">No</label>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <p>12. {{sy12}}</p>
+                    <div class="custom-control custom-radio">
+                        <input name="12" type="radio" id="yes12" class="custom-control-input" value="{{sy12.id}}" required>
+                        <label for="yes12" class="custom-control-label">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input name="12" type="radio" id="no12" class="custom-control-input" value="0" required>
+                        <label for="no12" class="custom-control-label">No</label>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <p>13. {{sy13}}</p>
+                    <div class="custom-control custom-radio">
+                        <input name="13" type="radio" id="yes33" class="custom-control-input" value="{{sy13.id}}" required>
+                        <label for="yes3" class="custom-control-label">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input name="13" type="radio" id="no13" class="custom-control-input" value="0" required>
+                        <label for="no13" class="custom-control-label">No</label>
+                    </div>
+                </div>
+            </div>
+            <p class="center"><b>Complications</b></p>
+            <article>Please select only one complication. You will get a field to add others on your appointment</article>
+            <div id="complications">
+                <select class="form-control" name="complication" id="complication">
+                    <option value="None">None</option>
+                    {% for complication in complications %}
+                        <option value="{{complication.id}}">{{complication}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary l">Get Results</button>
+                <button type="button" id="clear-form" class="btn btn-success float-right r">Clear</button>
+            </div>
+            <br>
+        </div>
+    </form>
+</div>
+{% endblock %}
