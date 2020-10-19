@@ -243,14 +243,17 @@ def checkup(request):
             #check if user is patient and update, if not add them
             try:
                 patient = Patient.objects.get(user=request.user)
-                hospital = Hospital.objects.filter(doctor=doctor).first()
-                patient.complications.add(complication)
-                improvenment = patient.update_symptoms(weight_data[2])
+
+                #add complication if it's available
+                if complication:
+                    patient.complications.add(complication)
+
+                improvenment = patient.update_symptoms(weight_data[1])
 
                 return render(request, "patients/results.html", {
                     "existing": True,
                     "possibility": round(patient.current_possibility, 1),
-                    "appointment": patient.appointment,
+                    "appointment": patient.appointments,
                     "condition": patient.condition,
                     "improvenment": round(improvenment, 1)
                 })
@@ -302,24 +305,24 @@ def checkup(request):
                 # it's a patient with reduced symptoms
                 try:
                     patient = Patient.objects.get(user=request.user)
-                    if patient.asymptomatic == False:
+                    if patient.asymptomatic == False: #! Fixme: this line is causing an error
 
                         patient.asymptomatic = True
                         patient.save()
 
-                        #update patient symptoms
-                        improvenment = patient.update_symptoms(symptoms_object_list)
+                    #update patient symptoms
+                    improvenment = patient.update_symptoms(symptoms_object_list)
 
-                        #insert the patient into results
-                        Result.objects.create(user=request.user, last_possibility=patient.previous_possibility,
-                                              new_possibility=possibility, date=today_date)
+                    #insert the patient into results
+                    Result.objects.create(user=request.user, last_possibility=patient.previous_possibility,
+                                            new_possibility=possibility, date=today_date)
 
-                        return render(request, "patients/results.html", {
-                            "possibility": round(patient.current_possibility, 1),
-                            "condition": patient.condition,
-                            "improvenment": round(improvenment, 1),
-                            "healed": True
-                        })
+                    return render(request, "patients/results.html", {
+                        "possibility": round(patient.current_possibility, 1),
+                        "condition": patient.condition,
+                        "improvenment": round(improvenment, 1),
+                        "healed": True
+                    })
                 except Patient.DoesNotExist:
                     
                     #This means that the user is completely new on check-up
