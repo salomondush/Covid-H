@@ -227,7 +227,7 @@ def checkup(request):
                 if complication_id != 'None':
                     complication = Complication.objects.get(pk=int(complication_id))
                 else:
-                    complication = False;
+                    complication = False
 
                 #delete from results table
                 result = Result.objects.get(user=request.user)
@@ -236,9 +236,6 @@ def checkup(request):
                 raise Http404("Selected Complication Does not Exist")
             except Result.DoesNotExist:
                 pass
-            
-            #generate automatic doctor
-            doctor = get_doctor()
 
             #check if user is patient and update, if not add them
             try:
@@ -259,10 +256,14 @@ def checkup(request):
                 })
 
             except Patient.DoesNotExist: 
+
                 if possibility >= critical_threshold:
                     condition = "Critical"
                 else:
                     condition = "Mild"
+                
+                #generate automatic doctor
+                doctor = get_doctor()
 
                 #create appointment and patient instance.
                 appointment_date = get_appointment_date(condition, complication)
@@ -305,7 +306,7 @@ def checkup(request):
                 # it's a patient with reduced symptoms
                 try:
                     patient = Patient.objects.get(user=request.user)
-                    if patient.asymptomatic == False: #! Fixme: this line is causing an error
+                    if patient.asymptomatic == False:
 
                         patient.asymptomatic = True
                         patient.save()
@@ -350,7 +351,7 @@ def appointment(request):
             return render(request, "patients/error.html", {
                 "error": "You have no appointments yet"
             })
-        except Patient.DoesNotExist:
+        except Patient.DoesNotExist: 
             raise Http404("Patient matching appointment id not found!")
 
         #age calculation

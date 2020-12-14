@@ -49,7 +49,7 @@
                     <div class="text-muted">Age: {{patient_age}}</div>
                 </div>
                 <hr>
-                <div id="information">
+                <div id="information"><span><a href="#">Edit</a></span>
                     <h5>Information:</h5>
                     <p><b>Email:</b> <span class="text-muted">{{patient.user.email}}</span></p>
                     <p><b>Phone number:</b>  <span class="text-muted">{{patient.user.phone}}</span></p>
@@ -127,25 +127,10 @@
                     </div>
                 </div>
                 <!-- Onogoing treatments do not work currently -->
-                <p class="center"><b>Privious appointments</b></p>
+                <p class="center"><b>Doctor suggested medications</b></p>
                 <!--Modal-->
-                <div style="overflow-y: scroll;" id="appointment-dates"> 
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Doctor</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for appointment in old_appointements %}
-                                <tr>
-                                    <td>{{appointment.doctor}}</td>
-                                    <td>{{appointment.date}}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <div style="overflow-y: scroll;" id="medications"> 
+                    
                 </div>
             </div>
         </div>

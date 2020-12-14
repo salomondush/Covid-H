@@ -19,7 +19,7 @@
             <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(Doctor)</span></a>
+                    <a class="nav-link" href="{% url 'doctors' %}">Home <span class="sr-only">(Doctor)</span></a>
                 </li>
                 <li>
                     <a class="nav-link" href="{% url 'user_appointment' %}"></a>
@@ -29,7 +29,7 @@
               <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a href="{% url 'user_logout' %}" class="nav-link">logout</a>
+                    <a href="{% url 'doctor_logout' %}" class="nav-link">logout</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
@@ -42,22 +42,117 @@
               </ul>
         </div>
     </nav>
+    <!--Template for displaying patient list-->
     <script id="selected-patient-list" type="text/x-handlebars-template">
         {% verbatim %}
             <ul class="list-group">
                 {{#each patients as |patient|}}
-                    <li class="list-group-item"><a href="{% url 'doctor_patient' patient.id %}">{{patient}}</a><span class="text-muted float-right">{{patient.last_visit}}</span></li>
+                    {{#each patient}}
+                        <li class="list-group-item"><a href="patient/{{this.id}}">{{this.name}}</a><span class="text-muted float-right">{{this.date}}</span></li>
+                    {{/each}}
                 {{/each}}
             </ul>
         {% endverbatim %}
     </script>
+    <!--Template for displaying appointment list-->
     <script id="selected-appointment-list" type="text/x-handlebars-template">
         {% verbatim %}
             <ul class="list-group">
                 {{#each appointments as |appointment|}}
-                    <li class="list-group-item"><a href="{% url 'doctor_patient' appointment.get_patient.id %}">{{appointment.get_patient}}</a><span class="text-muted float-right">{{appointment.date}}</span></li>
+                    <li class="list-group-item"><a href="{% url 'doctor_patient' appointment.id %}">{{appointment.get_patient}}</a><span class="text-muted float-right">{{appointment.date}}</span></li>
                 {{/each}}
             </ul>
+        {% endverbatim %}
+    </script>
+    <!--template for adding sickness/complication-->
+    <script id="add-sickness-template" type="text/x-handlebars-template">
+        {% verbatim %}
+        <form id="add-sickness" class="form-group" action="{% url 'user_appointment' %}" method='post'>
+            {% csrf_token %}
+            <select class="form-control" name="complication">
+                {{#each complications as |complication|}}
+                    <option value="{{complication}}">{{complication}}</option>
+                {{/each}}
+                <option value="None">None</option>
+            </select>
+            <select class="form-control">
+                {{#each symptoms as |symptom| }}
+                    <option value="{{symptom}}">{{symptom}}</option>
+                {{/each}}
+                <option value="None">None</option>
+            </select>
+            <button type="submit" class="btn btn-success">+ Treatment</button>
+        </form>
+        {% endverbatim %}
+    </script>
+    <!--template for viewing previous appointments-->
+    <script id="previous-appointments-template" type="text/x-handlebars-template">
+        {% verbatim %}
+        <p class="center"><b>Privious appointments</b></p>
+        <div style="overflow-y: scroll;" id="appointment-dates"> 
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <div id="table-rows">
+                    {{#each appointments as |appointment|}}
+                        <tr>
+                            <td>{{appointment.doctor}}</td>
+                            <td>{{appointment.date}}</td>
+                        </tr>
+                    {{/each}}
+                </div>
+                </tbody>
+            </table>
+        </div>
+        {% endverbatim %}
+    </script>
+    <!--Template for the medication div of the patients DOM-->
+    <script id="medication-template" type="text/x-handlebars-template">
+        {% verbatim %}
+        <!--This will be a in the handlebars templates-->
+        <div class="medications-container">
+            <div id="medications-list">
+                <ul id="medications-set" class="list-group">
+                    {{#each medications as |medic|}}
+                    <li class="list-group-item">{{medic.medication}} <span class="text-muted float-right">{{medic.date}}</span></li>  
+                    {{/each}}                       
+                </ul>
+            </div>
+            <form id="add-medication-form" action="">
+                <div class="input-group" id="add-medication">
+                    <input id="medication-text" class="form-control" type="text">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-success">+ medication</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endverbatim %}
+    </script>
+    <!--Template for displaying patient personal information-->
+    <script id="updated-patient-information-template" type="text/x-handlebars-template">
+        {% verbatim %}
+        <div id="updated-information">
+            <p><b>Email:</b> <span class="text-muted">{{email}}</span></p>
+            <p><b>Phone number:</b>  <span class="text-muted">+{{phone}}</span></p>
+            <p><b>Gender:</b> <span class="text-muted">{{gender}}</span></p>
+        </div>  
+        {% endverbatim %}
+    </script>
+    <!--Template for editing user personal information-->
+    <script type="text/x-handlebars-template" id="person-edit-template">
+        {% verbatim %}
+        <form id="update-patient-info" class="form-group" action="">
+            <input name="email" class="form-control" id="email" type="text" value="{{email}}" placeholder="New Email">           
+            <input name="phone number" class="form-control" id="phone" type="number" value="{{phone}}" placeholder="New Phone">         
+            <input name="gender" class="form-control" id="gender" type="text" value="{{gender}}" placeholder="gender">
+            <button type="submit" class="btn btn-success">Update</button>
+        </form>
         {% endverbatim %}
     </script>
 </head>
