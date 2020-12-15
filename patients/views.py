@@ -118,7 +118,7 @@ def index(request):
                  'Syrian Arab Republic (Syria)', 'Taiwan', ' Republic of China', 'Tajikistan', 'Tanzania', ' United Republic of', 
                  'Thailand', 'Timor-Leste', 'Togo', 'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Uganda', 'Ukraine', 
                  'United Arab Emirates', 'United Kingdom', 'United States of America', 'Uruguay', 'Uzbekistan', 
-                 'Venezuela (Bolivarian Republic)', 'Viet Nam', 'Western Sahara', 'Yemen', 'Zambia', 'Zimbabwe'];
+                 'Venezuela (Bolivarian Republic)', 'Viet Nam', 'Western Sahara', 'Yemen', 'Zambia', 'Zimbabwe']
     cases_data = cases()
     world = cases_data[1]
     country = cases_data[0]
@@ -257,7 +257,7 @@ def checkup(request):
 
             except Patient.DoesNotExist: 
 
-                if possibility >= critical_threshold:
+                if possibility >= critical_threshold: 
                     condition = "Critical"
                 else:
                     condition = "Mild"

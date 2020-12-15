@@ -13,6 +13,11 @@ class User(AbstractUser):
     is_doctor = models.BooleanField()
     gender = models.CharField(max_length=1, blank=True)
 
+    def is_valid_user(self):
+        return ((len(self.username) > 0) and (len(self.gender) > 0)
+                and (len(self.email) > 0) and (self.date_of_birth 
+                > date(1818, 1, 1)))
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -65,7 +70,7 @@ class Appointment(models.Model):
 class Patient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="patient")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="patients")
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name="hospital_patients")
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name="hospital_patients")#FIXME: redudant
 
     condition = models.CharField(max_length=10)
     symptoms = models.ManyToManyField(Symptom, blank=True)
@@ -117,9 +122,12 @@ class Patient(models.Model):
         self.symptoms.add(symptom)
         self.previous_possibility = self.current_possibility
         self.current_possibility += symptom.weight
+
+        #update patient's progress
+        self.progress = self.current_possibility - self.previous_possibility
         self.save()
 
-        return self.current_possibility - self.previous_possibility
+        return self.progress
 
     def remove_symptom(self, symptom): 
 
@@ -129,11 +137,15 @@ class Patient(models.Model):
         #update current possibility
         self.previous_possibility = self.current_possibility
         self.current_possibility -= symptom.weight
+
+        #updsate the patient's progress
+        self.progress = self.current_possibility - self.previous_possibility
         self.save()
 
-        return self.current_possibility - self.previous_possibility
+        return self.progress
 
-
+    def is_valid_patient(self):
+        return (self.current_possibility >= 50)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
