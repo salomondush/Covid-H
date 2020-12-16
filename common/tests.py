@@ -3,11 +3,13 @@ from django.db.models import Max
 from datetime import date
 from .models import *
 
+
 class CovidTestCase(TestCase):
 
     def setUp(self):
 
         #create 3 user objects to use
+        #to be used for testing valid patient
         user_1 = User.objects.create_user("salomon", "salomon@gmail.com", "salomon@123",
         phone="0780556610",
         first_name="Salomon",
@@ -29,6 +31,7 @@ class CovidTestCase(TestCase):
         is_doctor=False)
         user_1.save()
 
+        #to be used for a doctor
         user_2 = User.objects.create_user("ivan", "ivan@gmail.com", "ivan@123",
         phone="0780566100",
         first_name="ivan",
@@ -43,7 +46,7 @@ class CovidTestCase(TestCase):
         hospital = Hospital.objects.create(name="King Faiscal Hospital", location="Kigali")
 
         #create a doctor object 
-        Doctor.objects.create(user=user_2, hospital=hospital)
+        doctor = Doctor.objects.create(user=user_2, hospital=hospital)
 
         #reate symptoms
         Symptom.objects.create(name="Fever", weight=20, symptom_type="most_common")
@@ -60,14 +63,9 @@ class CovidTestCase(TestCase):
         Symptom.objects.create(name="Chest pain or pressure", weight=10, symptom_type="serious")
         Symptom.objects.create(name="Loss of speech or movement", weight=10, symptom_type="serious")
 
-    def test_valid_patient(self):
-        """Test a valid patient"""
-        user = User.objects.get(username="salomon")
-        userDoc = User.objects.get(username="ivan")
-        doctor = Doctor.objects.get(user=userDoc)
+        #create a patient
         appointment = Appointment.objects.create(doctor=doctor, date=date.today())
-
-        patient = Patient.objects.create(user=user, doctor=doctor, hospital=doctor.hospital,
+        patient = Patient.objects.create(user=user_1, doctor=doctor, hospital=doctor.hospital,
                                             condition="None", initial_date=date.today(), 
                                             last_visit=date.today(), current_possibility=0.0,
                                             previous_possibility=0.0, appointments=appointment)
@@ -75,6 +73,15 @@ class CovidTestCase(TestCase):
         #add the symptoms
         symptoms = Symptom.objects.filter(symptom_type="most_common")
         patient.update_symptoms(symptoms)
+
+    """Database Test Block"""
+
+    def test_valid_patient(self):
+        """Test a valid patient"""
+
+        #get patient to test
+        user = User.objects.get(username="salomon")
+        patient = Patient.objects.get(user=user)
 
         return self.assertTrue(patient.is_valid_patient() and patient.asymptomatic == False)
 
@@ -112,4 +119,174 @@ class CovidTestCase(TestCase):
         return self.assertFalse(valid_user)
 
         
+    """Doctor Views Testing Block"""
 
+    def test_doctor_index(self):
+        """Test for doctor index page"""
+        user = User.objects.get(username="ivan")
+
+        c = Client()
+
+        c.login(
+            username='ivan',
+            password='ivan@123'
+        )
+
+        response = c.get("/doctors/doctor")
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["patients_number"], 1)
+
+
+    def test_doctor_appointments(self):
+        """Test for doctor appointments"""
+
+        user = User.objects.get(username="salomon")
+        patient = Patient.objects.get(user=user)
+        appointment = Appointment.objects.get(doctor=patient.doctor)
+
+        c = Client()
+
+        c.login(
+            username='ivan',
+            password='ivan@123'
+        )
+
+        response = c.get("/doctors/appointments")
+    
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, 'utf8'),
+            {
+                "appointments": [{"id": patient.id,
+                "name": patient.__str__(),
+                "date": appointment.date.strftime("%m/%d/%y")
+             }]}
+        )
+
+    def test_display_patient(self):
+        """Test for doctor display_patient() view function"""
+        user = User.objects.get(username="salomon")
+        patient = Patient.objects.get(user=user)
+
+        c = Client()
+
+        c.login(
+            username='ivan',
+            password='ivan@123'
+        )
+
+        response = c.get(f"/doctors/patient/{patient.id}")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["patient"].current_possibility, 
+                        patient.current_possibility)
+
+
+    def test_display_medications(self):
+        """Test for the doctors display medications"""
+
+        user = User.objects.get(username="salomon")
+        patient = Patient.objects.get(user=user)
+
+        c = Client()
+        c.login(
+            username='ivan',
+            password='ivan@123'
+        )
+
+        response = c.get(f"/doctors/medications?id={patient.id}")
+
+        #since there are no medications yet, we should have one object for
+        #displaying none.
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(str(response.content, 'utf8'), {
+            'medications': [{'medication': 'None', 'date': date.today().strftime("%m/%d/%y")}]
+            })
+
+    def test_display_patients(self):
+        """Test for the doctors patient view"""
+        user = User.objects.get(username="salomon")
+        patient = Patient.objects.get(user=user)
+
+        c = Client()
+        c.login(
+            username='ivan',
+            password='ivan@123'
+        )
+
+        response = c.get(f"/doctors/patients")
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(str(response.content, 'utf8'),
+        {
+            "patients": [{
+                "id": patient.id,
+                "name": patient.__str__(),
+                "date": patient.last_visit.strftime("%m/%d/%y")
+            }]
+        }
+        )
+
+    def test_doctor_recovered(self):
+        """Test for doctor's recovered() view function"""
+
+        c = Client()
+        c.login(
+            username='ivan',
+            password='ivan@123'
+        )
+
+        response = c.get("/doctors/recovered")
+
+        #the returned json should be empy because we have no recovered patient
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(str(response.content, 'utf8'), {
+            "recovered": []
+        })
+
+    """Test block for the patients application"""
+
+    def test_patient_index(self):
+        """Test for user's index view"""
+
+        c = Client()
+        c.login(
+            username='salomon',
+            password='salomon@123'
+        )
+        response = c.get("/patients/patients")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_user_checkup(self):
+        """Test the user's checkup view with a 'GET' request"""
+        
+        c = Client()
+        c.login(
+            username='salomon',
+            password='salomon@123'
+        )
+
+        response = c.get("/patients/checkup")
+
+        #check if the view renders with non erros
+        self.assertEqual(response.status_code, 200)
+
+    
+    def test_user_appointment(self):
+        """Test for user appointment view"""
+
+        user = User.objects.get(username="salomon")
+        patient = Patient.objects.get(user=user)
+
+        c = Client()
+        c.login(
+            username='salomon',
+            password='salomon@123'
+        )
+        response = c.get("/patients/appointment")
+
+        #check if the current patient has an appointment
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["patient"], patient)
+    

@@ -275,7 +275,7 @@ def checkup(request):
 
                 #now add complication and symptoms for the new patient
                 if complication:
-                    patient.complications.add(complication)
+                    patient.complications.add(complication) 
 
 
                 for symptom in symptoms_object_list:

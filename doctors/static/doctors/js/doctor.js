@@ -54,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             
+            console.log(data); //FIXME:
             //update header and call function to display current patients
             document.querySelector("#selected").innerHTML = "Current Patients List";
             display_patients(data);
@@ -70,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
 
+            console.log(data); //FIXME:
             //update header and call function to display recovered patients
             document.querySelector("#selected").innerHTML = "Recovered List";
             display_patients(data);
@@ -83,9 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function get_appointments() {
 
         fetch(`/doctors/appointments`)
-        .then(response => response.json())
+        .then(response => response.json()) 
         .then(data => {
 
+            console.log(data); //FIXME:
             //update header and call function to display appointments
             document.querySelector("#selected").innerHTML = "Appointments List";
             display_patients(data);

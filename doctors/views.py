@@ -120,16 +120,16 @@ def index(request):
     #call method to filter for valid appointments
     appointments = get_appointments_list(doctor.doctor_appointments.all())
 
-
-    #return information
-    return render(request, "doctors/index.html", {
+    context = {
         "hospital": doctor.hospital,
         "doctor": doctor,
         "appointments_number": len(appointments),
         "patients_number": doctor.patients.filter(asymptomatic=False).count(),
         "recovered_number": asymptomatic_patients,
-        "age": age
-    })
+        "age": age 
+    }
+    #return information
+    return render(request, "doctors/index.html", context)
 
 
 @login_required(redirect_field_name="doctor_login", login_url="/doctor/login")

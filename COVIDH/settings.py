@@ -83,6 +83,16 @@ DATABASES = {
     }
 }
 
+"""DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'salomon',
+        'HOST': 'db',
+    }
+}"""
+
 AUTH_USER_MODEL = "common.User"
 
 # Password validation
