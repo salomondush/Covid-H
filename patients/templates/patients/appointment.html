@@ -49,12 +49,14 @@
                     <div class="text-muted">Age: {{patient_age}}</div>
                 </div>
                 <hr>
-                <div id="information"><span><a href="#">Edit</a></span>
+                <div id="information"><span><a id="edit-user-information" href="javascript:void(0)">Edit</a></span>
                     <h5>Information:</h5>
-                    <p><b>Email:</b> <span class="text-muted">{{patient.user.email}}</span></p>
-                    <p><b>Phone number:</b>  <span class="text-muted">{{patient.user.phone}}</span></p>
-                    <p><b>Gender:</b> <span class="text-muted">{{patient.user.gender}}</span></p>
-                    <p><b>Patient ID:</b>  <span class="text-muted">{{patient.id}}</span></p>
+                    <div id="updatable-info">
+                        <p><b>Email:</b> <span id="user-email" class="text-muted">{{patient.user.email}}</span></p>
+                        <p><b>Phone number:</b>  <span id="user-phone" class="text-muted">+{{patient.user.phone}}</span></p>
+                        <p><b>Gender:</b> <span id="user-gender" class="text-muted">{{patient.user.gender}}</span></p>
+                    </div>
+                    <p><b>Patient ID:</b>  <span id="patient-id" class="text-muted">{{patient.id}}</span></p>
                     <p><b>Initial Appointment:</b>  <span class="text-muted">{{patient.initial_date}}</span></p>
                     <p><b>Last Visit:</b>  <span class="text-muted">{{patient.last_visit}}</span></p>
                     <p><b>Appointment Date:</b>  <span class="text-muted">{{appointment.date}}</span></p>
@@ -87,7 +89,7 @@
                         </ul>
                     </div>
                 </div>
-                <p class="center"><b>Complication</b></p>
+                <p class="center"><b>Complications</b></p>
                 <div id="complications" class="row">
                     {% for complication in patient_complications %}
                         <div class="col-lg-3">
@@ -113,7 +115,7 @@
                                     {% csrf_token %}
                                     <select name="complication">
                                         {% for complication in complications %}
-                                            <option value="{{complication}}">complication</option>
+                                            <option value="{{complication}}">{{complication}}</option>
                                         {% endfor %}
                                     </select>
                                     <button type="submit" class="btn btn-success add">+ Treatment</button>

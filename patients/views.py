@@ -196,21 +196,21 @@ def checkup(request):
         critical_threshold = 80
 
         #Collect all symptoms and analyse them.
-        sy1 = request.POST["1"]
-        sy2 = request.POST['2']
-        sy3 = request.POST['3']
-        sy4 = request.POST['4']
-        sy5 = request.POST['5']
-        sy6 = request.POST['6']
-        sy7 = request.POST['7']
-        sy8 = request.POST['8']
-        sy9 = request.POST['9']
-        sy10 = request.POST['10']
-        sy11 = request.POST['11']
-        sy12 = request.POST['12']
-        sy13 = request.POST['13']
+        sy1 = request.POST.get("1", 0)
+        sy2 = request.POST.get('2', 0)
+        sy3 = request.POST.get('3', 0)
+        sy4 = request.POST.get('4', 0)
+        sy5 = request.POST.get('5', 0)
+        sy6 = request.POST.get('6', 0)
+        sy7 = request.POST.get('7', 0)
+        sy8 = request.POST.get('8', 0)
+        sy9 = request.POST.get('9', 0)
+        sy10 = request.POST.get('10', 0)
+        sy11 = request.POST.get('11', 0)
+        sy12 = request.POST.get('12', 0)
+        sy13 = request.POST.get('13', 0)
 
-        complication_id = request.POST["complication"] #this should be an ID integer
+        complication_id = request.POST.get("complication", 'None') #this should be an ID integer
 
         sy_list = [sy1, sy2, sy3, sy4, sy5, sy6, sy7, sy8, sy9, sy10, sy11, sy12, sy13]
 
@@ -380,7 +380,7 @@ def appointment(request):
 
     else:
         #when a user adds a complication to the appointment
-        complication = request.POST["complication"]
+        new_complication = request.POST["complication"]
 
         #get patient object
         try:
@@ -388,8 +388,42 @@ def appointment(request):
         except Patient.DoesNotExist:
             raise Http404("Patient adding Complication does not exist")
 
+        #get complication object
+        try:
+            complication = Complication.objects.get(name=new_complication.strip())
+        except Complication.DoesNotExist:
+            raise Http404("Selected Complication Does Not Exist")
+
         #add complication to patients complication lists
         patient.complications.add(complication)
 
         #redirect the user back
         return HttpResponseRedirect(reverse("user_appointment"))
+
+
+@login_required(redirect_field_name="user_login", login_url="/patients/login")
+def update_user_information(request):
+    """This function can also be called by the patient, when editing info
+    """
+    
+    email = request.GET.get("email")
+    phone_number = request.GET.get("phone")
+    gender = request.GET.get("gender")
+    patient_id = int(request.GET.get("id"))
+
+    #get patient
+    try:
+        patient = Patient.objects.get(pk=patient_id)
+    except Patient.DoesNotExist:
+        raise Http404("Patient to update Does Not Exist")
+
+    user_id = patient.user.id 
+    
+    #call helper function to update patient fields
+    updated_list = edit_user_information(user_id, email, phone_number, gender)
+
+    return JsonResponse({
+        "phone": updated_list[0],
+        "email": updated_list[2],
+        "gender": updated_list[1]
+    })

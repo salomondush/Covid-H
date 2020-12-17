@@ -24,13 +24,13 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#information-medications").innerHTML = medication_div;
     }
 
-    //patient information update form
+    //patient information update form 
     const update_form = Handlebars.compile(document.querySelector("#person-edit-template").innerHTML);
     const display_update_form = data => {
         
         //send information to template and updated the div
         var update_form_div = update_form(data);
-        document.querySelector("#updatable-info").innerHTML = update_form_div;
+        document.querySelector(".updatable-info").innerHTML = update_form_div;    
     }
 
     //patient updated information template
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //send infomation to template and update the div
         var updated_info_div = updated_information(data);
-        document.querySelector("#updatable-info").innerHTML = updated_info_div;
+        document.querySelector(".updatable-info").innerHTML = updated_info_div;
     }
 
     /**
@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             
-            console.log(data); //FIXME:
             //update header and call function to display current patients
             document.querySelector("#selected").innerHTML = "Current Patients List";
             display_patients(data);
@@ -71,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
 
-            console.log(data); //FIXME:
             //update header and call function to display recovered patients
             document.querySelector("#selected").innerHTML = "Recovered List";
             display_patients(data);
@@ -88,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json()) 
         .then(data => {
 
-            console.log(data); //FIXME:
             //update header and call function to display appointments
             document.querySelector("#selected").innerHTML = "Appointments List";
             display_patients(data);
@@ -150,10 +147,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     //functiont to update patient information
-    function update_patient_information(id, email, phone, gender){
+    function update_user_information(doctor, id, email, phone, gender){
         
         //make a call to the server for infomation to be updated
-        fetch(`/doctors/edit_patient?id=${id}&email=${email}&phone=${phone}&gender=${gender}`)
+        fetch(`/doctors/edit_patient?doctor=${doctor}&id=${id}&email=${email}&phone=${phone}&gender=${gender}`)
         .then(response => response.json())
         .then(data => {
             
@@ -198,17 +195,27 @@ document.addEventListener("DOMContentLoaded", () => {
             var id = document.getElementById("display-medications").getAttribute("data-value")
             get_medications(id)
 
-        }  else if (event.target.id == "edit-patient-information"){//edit some patient information
+        }  else if (event.target.id == "edit-user-information"){//edit some patient information
             
             //get current patient information
-            var email = document.getElementById("patient-email").innerText;
-            var phone = parseInt(document.getElementById("patient-phone").innerText);
-            var gender = document.getElementById("patient-gender").innerText;
-           
+            var email = document.getElementById("user-email").innerText;
+            var phone = parseInt(document.getElementById("user-phone").innerText);
+            var gender = document.getElementById("user-gender").innerText;
+
             //call function to display the patient information update form
             display_update_form({"email": email, "phone": phone, "gender": gender});
 
-        } else if (event.target.id == "appointments-list"){ //see appointments
+        } else if (event.target.id == "edit-doctor-information") {
+
+            //get current doctor information
+            var email = document.getElementById("doctor-email").innerText;
+            var phone = parseInt(document.getElementById("doctor-phone").innerText);
+            var gender = document.getElementById("doctor-gender").innerText;
+
+            //call function to display the patient information update form
+            display_update_form({"doctor": true, "email": email, "phone": phone, "gender": gender});
+
+        }else if (event.target.id == "appointments-list"){ //see appointments
             get_appointments();
         } else if (event.target.id == "patients-list"){//see current patients
             get_patients();
@@ -251,10 +258,19 @@ document.addEventListener("DOMContentLoaded", () => {
             var email = document.querySelector("#email").value;
             var phone = document.querySelector("#phone").value;
             var gender = document.querySelector("#gender").value;
-            var patient_id = parseInt(document.querySelector("#patient-id").innerText);
+            var doctor = document.querySelector(".updatable-info").getAttribute("data-value")
+            
+            //construct a boolean of whether we are updating doctor or user information
+            if (doctor == "yes"){
+                var is_doctor = true
+            } else {
+                var is_doctor = false
+            }
+
+            var user_id = parseInt(document.querySelector("#user-id").innerText);
 
             //call function that calls the server to update patient information
-            update_patient_information(patient_id, email, phone, gender);
+            update_user_information(is_doctor, user_id, email, phone, gender);
         }
     });  
 });

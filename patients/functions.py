@@ -156,7 +156,7 @@ def arrange_symptoms(symptoms):
 
     
 
-def edit_patient_information(id, email, phone_number, gender):
+def edit_user_information(id, email, phone_number, gender):
     """updates certain fields about a patient
     parameters
         -email
@@ -166,17 +166,17 @@ def edit_patient_information(id, email, phone_number, gender):
     """
      #get patient and update these fields
     try:
-        patient = Patient.objects.get(pk=id)
+        user = User.objects.get(pk=id)
     except Patient.DoesNotExist:
         raise Http404("Can't edit patient information, Not found!")
 
-    patient.user.phone = phone_number
-    patient.user.gender = gender
-    patient.user.email = email
-    patient.user.save()
+    user.phone = phone_number
+    user.gender = gender
+    user.email = email
+    user.save()
 
     #return to calling function the updated list
-    return [patient.user.phone, patient.user.gender, patient.user.email]
+    return [user.phone, user.gender, user.email]
 
 def retrieve_patient_info(request, id):
     """this function retrives patient related infomation

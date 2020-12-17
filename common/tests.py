@@ -4,7 +4,6 @@ from datetime import date
 from .models import *
 import json
 
-
 class CovidTestCase(TestCase):
 
     def setUp(self):
@@ -292,14 +291,13 @@ class CovidTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["patient"], patient)
 
-    def user_appointment_checkup(self):
+    def test_user_appointment_checkup(self):
         """
         -Test if the user checkup() view gives an appointment
         -A patient should not be in the Results class
         """
 
         user = User.objects.get(username="eric")
-        patient = Patient.objects.get(user=user)
 
         c = Client()
         c.login(
@@ -307,20 +305,22 @@ class CovidTestCase(TestCase):
             password='eric@123'
         )
 
-        response = c.post("/patients/checkup", json.dumps({
+        response = c.post("/patients/checkup", {
             "1": 1, "2": 2, "3": 3, "4": 0, "5": 0,
             "6": 0, "7": 0, "8": 0, "9": 0, "10": 0,
             "11": 0, "12": 0, "13": 0, 
             "complication": "None"
-        }), content_type="application/json")
+        })
+
+        patient = Patient.objects.get(user=user)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["possibility"], 60.0)
 
         #test if appointment for user has been created
-
         #get the current user appointment first
         appointments = Appointment.objects.all()
+
         for appointment in appointments:
             if appointment.get_patient() == patient:
                 current_appoint = appointment
@@ -337,13 +337,12 @@ class CovidTestCase(TestCase):
 
         self.assertEqual(result, None)
 
-    def user_recovered_checkup(self):
+    def test_user_recovered_checkup(self):
         """- Test user checkup view when the user has recovered
         where the checkup data is kept in the results table
         """
 
         user = User.objects.get(username="salomon")
-        patient = Patient.objects.get(user=user)
 
         c = Client()
         c.login(
@@ -351,12 +350,12 @@ class CovidTestCase(TestCase):
             password='salomon@123'
         )    
 
-        response = c.post("/patients/checkup", json.dumps({
+        response = c.post("/patients/checkup", {
             "1": 0, "2": 0, "3": 3, "4": 0, "5": 0,
             "6": 0, "7": 7, "8": 8, "9": 0, "10": 0,
             "11": 0, "12": 0, "13": 0, 
             "complication": "None"
-        }), content_type="application/json")
+        })
 
         #check if the the patient is asymptomatic now
         self.assertTrue(response.context["healed"])
@@ -368,3 +367,48 @@ class CovidTestCase(TestCase):
             result = None
 
         self.assertNotEqual(result, None)
+
+    def test_user_degenerated_checkup(self):
+       
+        #Testing checkup view for a patient who got infected again
+        
+
+        user = User.objects.get(username="salomon")
+        patient = Patient.objects.get(user=user)
+
+        c = Client()
+        c.login(
+            username='salomon',
+            password='salomon@123'
+        )
+
+        #first call view with non-concerning symptoms
+        c.post("/patients/checkup",{
+            "1": 0, "2": 0, "3": 3, "4": 0, "5": 0,
+            "6": 0, "7": 7, "8": 8, "9": 0, "10": 0,
+            "11": 0, "12": 0, "13": 0, 
+            "complication": "None"
+        })
+
+        #Now give user concerning symptoms
+        response = c.post("/patients/checkup", {
+            "1": 1, "2": 2, "3": 3, "4": 0, "5": 0,
+            "6": 0, "7": 0, "8": 0, "9": 0, "10": 0,
+            "11": 0, "12": 0, "13": 0, 
+            "complication": "None"
+        })
+
+        self.assertEqual(response.status_code, 200)
+
+        #Check that user is deleted from the results table
+        #and check if the patient is not asymptomatic 
+        try:
+            result = Result.objects.get(user=user)
+        except Result.DoesNotExist:
+            result = None
+
+        self.assertEqual(result, None)
+        self.assertFalse(patient.asymptomatic)
+
+        #check from the view return if the patient was existing already
+        self.assertTrue(response.context["existing"])

@@ -282,10 +282,25 @@ def edit_patient(request):
     email = request.GET.get("email")
     phone_number = request.GET.get("phone")
     gender = request.GET.get("gender")
-    patient_id = request.GET.get("id")
+    given_id = request.GET.get("id")
+    doctor = request.GET.get("doctor")
+
+    #construct boolean for is_doctor
+    if doctor == "false":
+        
+        try:
+            patient = Patient.objects.get(pk=given_id)
+        except Patient.DoesNotExist:
+            raise Http404("Patient not found!")
+
+        user_id = patient.user.id
+
+    else:
+        #when it's the current doctor
+        user_id = request.user.id 
 
     #call helper function to update patient fields
-    updated_list = edit_patient_information(patient_id, email, phone_number, gender)
+    updated_list = edit_user_information(user_id, email, phone_number, gender)
 
     return JsonResponse({
         "phone": updated_list[0],
