@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let symptom = parent.innerText.slice(0, parent.innerText.lastIndexOf("."));
 
             //get current patient id
-            let patient_id = parseInt(document.querySelector("#patient-id").innerText);
+            let patient_id = parseInt(document.querySelector("#user-id").innerText);
 
             //call method to remove symptom
             remove_symptom(patient_id, symptom, parent);
