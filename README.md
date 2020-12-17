@@ -59,7 +59,7 @@ Note:
         - login.html: provides login fields to the doctor.
         - register.html: provides register fields to the doctor.
 
-    pythong files:
+    python files:
         - views.py: holds all app view functions that assist in the above specified functionality of the doctors app
         - urls.py: holds all urls patterns for the doctors app
 
