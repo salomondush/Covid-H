@@ -41,27 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => {
                 console.log("Error", error);
             })
-
-            //make a fetch to the server
-           /* fetch(`/country_cases?country_name=${country}`)
-            .then(response => response.json())
-            .then(data => {
-                //update country name
-                document.querySelector("#country-name").innerHTML = data.Country;
-
-                //total and new cases
-                document.querySelector("#total-cases").innerHTML = data.TotalConfirmed;
-                document.querySelector("#new-cases").innerHTML = data.NewConfirmed;
-                //total recovered and new recovered
-                document.querySelector("#total-recovered").innerHTML = data.TotalRecovered;
-                document.querySelector("#new-recovered").innerHTML = data.NewRecovered;
-                //total deaths and new deaths
-                document.querySelector("#total-deaths").innerHTML = data.TotalDeaths;
-                document.querySelector("#new-deaths").innerHTML = data.NewDeaths;
-            })
-            .catch(error => {
-                console.log("Error", error)
-            });*/
         }     
     });
 });
