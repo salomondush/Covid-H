@@ -1,7 +1,3 @@
-# Final Project
-
-Web Programming with Python and Javascript
-
 # Covid-H
     A coronavirus symptoms screening web prototype that could connect critical 
     patients with doctors through automatic appointment and also provide updated 
