@@ -15,10 +15,13 @@
             </div>
             <hr>
             <div id="doctor-information">
-                <h5>Information:</h5>
-                <p><b>Email:</b> <span class="text-muted">{{doctor.user.email}}</span></p>
-                <p><b>Phone number:</b>  <span class="text-muted">{{doctor.user.phone}}</span></p>
-                <p><b>ID:</b>  <span class="text-muted">{{doctor.id}}</span></p>
+                <h5>Information:</h5><a id="edit-user-information" href="javascript:void(0)">Edit</a>
+                <div data-value="yes" class="updatable-info">
+                    <p><b>Email:</b> <span id="user-email" class="text-muted">{{doctor.user.email}}</span></p>
+                    <p><b>Phone number:</b>  <span id="user-phone" class="text-muted">+{{doctor.user.phone}}</span></p>
+                    <p><b>Gender:</b> <span id="user-gender" class="text-muted">{{doctor.user.gender}}</span></p>
+                </div>
+                <p><b>ID:</b>  <span id="user-id" class="text-muted">{{doctor.user.id}}</span></p>
                 <p><b>Hospital:</b>  <span class="text-muted">{{hospital}}</span></p>
                 <p><b>location:</b>  <span class="text-muted">{{hospital.location}}</span></p>
             </div>

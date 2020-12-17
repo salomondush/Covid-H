@@ -4,9 +4,10 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from patients.functions import age_calculation, arrange_symptoms
+from patients.functions import *
 
 from common.models import *
+from datetime import date
 
 # Create your views here.
 
@@ -90,7 +91,7 @@ def register(request):
 
 
 @login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
-def logout(request):
+def logout_doctor(request):
     """Logs the current user out
     parameters:
         -request
@@ -113,17 +114,23 @@ def index(request):
     #counting patients who have recovered or are asymptomatic
     asymptomatic_patients = doctor.patients.filter(asymptomatic=True).count()
 
+    #call function to calculate doctor age
     age = age_calculation(doctor.user.date_of_birth)
 
-    #return information
-    return render(request, "doctors/index.html", {
+    #call method to filter for valid appointments
+    appointments = get_appointments_list(doctor.doctor_appointments.all())
+
+    context = {
         "hospital": doctor.hospital,
         "doctor": doctor,
-        "appointments_number": doctor.doctor_appointments.count(),
-        "patients_number": doctor.patients.count(),
+        "appointments_number": len(appointments),
+        "patients_number": doctor.patients.filter(asymptomatic=False).count(),
         "recovered_number": asymptomatic_patients,
-        "age": age
-    })
+        "age": age 
+    }
+    #return information
+    return render(request, "doctors/index.html", context)
+
 
 @login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
 def appointments(request):
@@ -137,12 +144,171 @@ def appointments(request):
     except Doctor.DoesNotExist:
         raise Http404("Doctor with current user instance not found!")
 
-    #now get the doctors appointments
-    appointments = doctor.doctor_appointments.all()
+    #now get the doctors appointments with the most recent first.
+    appointments = get_appointments_list(doctor.doctor_appointments.all().order_by("-date"))
 
     return JsonResponse({
         "appointments": appointments
     })
+
+
+@login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
+def display_patient(request, patient_id):
+    """this function returns a ptient details if GET, and allows the doctor to 
+    add any medications or symptoms to the user.
+    parameters
+        -request
+        -patient_id
+    returns: patient_page
+    """
+
+    if request.method == "GET":
+
+        data = retrieve_patient_info(request, patient_id)
+
+        return render(request, "doctors/patient.html", data)
+    
+    else:
+        #add symptom or complication
+        new_symptom = request.POST["symptom"]
+        new_complication = request.POST["complication"]
+
+        #get patient instance
+        try:
+            patient = Patient.objects.get(pk=patient_id)
+            print(patient.user.username)
+        except Patient.DoesNotExist:
+            raise Http404(f"Cant add symptom {new_symptom} or complication (Patient {patient_id} Does Not Exist)")
+
+         #check if any symptom or complication was selected
+        if new_symptom != "None":
+            symptom = Symptom.objects.get(name=new_symptom.strip())
+            patient.add_symptom(symptom) 
+
+        if new_complication != "None":
+            complication = Complication.objects.get(name=new_complication.strip())
+            patient.complications.add(complication)
+
+    #redirect to reload page with new symptom
+    return HttpResponseRedirect(reverse("get_patient", args=(patient_id,)))
+
+
+@login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
+def remove_symptom(request):
+
+    symptom = request.GET.get("symptom")
+    patient_id = request.GET.get("id")
+
+    #get patient and symptom instance
+    try:
+        symptom = Symptom.objects.get(name=symptom.strip())
+        patient = Patient.objects.get(pk=patient_id)
+    except (Symptom.DoesNotExist, Patient.DoesNotExist):
+        raise Http404(f"Symptom {symptom} does not exist or patient {patient_id}")
+
+    #call instance method to update patient symptoms
+    patient.remove_symptom(symptom)
+
+    return JsonResponse({
+        "success": True
+    })
+
+
+@login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
+def patient_appointments(request):
+
+    user_id = request.GET.get("id")
+
+    data = retrieve_patient_info(request, user_id)
+
+    return JsonResponse({
+        "appointments": data["old_appointments"]
+    })
+
+
+@login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
+def display_medications(request):
+
+    patient_id = request.GET.get("id")
+
+    #get patient
+    try:
+        patient = Patient.objects.get(pk=patient_id)
+        medications = Medication.objects.filter(patient=patient).order_by("-date")
+    except Patient.DoesNotExist:
+        raise Http404("Patient for medications not found!")
+
+    data = []
+    for medic in medications:
+        data.append({"medication": medic.medication, "date": medic.date.strftime("%m/%d/%y")})
+    
+    #if no medication yet populate the data list with Nones
+    if len(data) == 0:
+        data = [{"medication": "None", "date": date.today().strftime("%m/%d/%y")}]
+
+    return JsonResponse({
+        "medications": data
+    })
+
+
+@login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
+def add_medication(request):
+
+    patient_id = request.GET.get("id")
+    medication = request.GET.get("medication")
+
+    #retrive patient
+    try:
+        patient = Patient.objects.get(pk=patient_id)
+    except Patient.DoesNotExist:
+        raise Http404("Can't add medication, patient not found!")
+
+    #create medication object
+    current_date = date.today()
+    Medication.objects.create(patient=patient, medication=medication, date=current_date)
+
+    #return medication back as JS to be updated
+    return JsonResponse({
+        "medication": medication,
+        "date": current_date.strftime("%m/%d/%y")
+    })
+
+
+@login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
+def edit_patient(request):
+    """This function can also be called by the patient, when editing info
+    """
+    
+    email = request.GET.get("email")
+    phone_number = request.GET.get("phone")
+    gender = request.GET.get("gender")
+    given_id = request.GET.get("id")
+    doctor = request.GET.get("doctor")
+
+    #construct boolean for is_doctor
+    if doctor == "false":
+        
+        try:
+            patient = Patient.objects.get(pk=given_id)
+        except Patient.DoesNotExist:
+            raise Http404("Patient not found!")
+
+        user_id = patient.user.id
+
+    else:
+        #when it's the current doctor
+        user_id = request.user.id 
+
+    #call helper function to update patient fields
+    updated_list = edit_user_information(user_id, email, phone_number, gender)
+
+    return JsonResponse({
+        "phone": updated_list[0],
+        "email": updated_list[2],
+        "gender": updated_list[1]
+    })
+
+
 
 @login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
 def patients(request):
@@ -156,8 +322,17 @@ def patients(request):
     except Doctor.DoesNotExist:
         raise Http404("Doctor with current user instance not found!")
 
+    #filter patients from asymptomatics
+    patient_objects = doctor.patients.all()
+    patients = []
+
+    for patient in patient_objects:
+        if patient.asymptomatic == False:
+            patients.append(patient)
+
+
     #now get the doctors patient instances
-    patients = doctor.patients.all()
+    patients = get_patients_list(patients)
 
     return JsonResponse({
         "patients": patients
@@ -187,69 +362,6 @@ def recovered(request):
             pass 
 
     return JsonResponse({
-        "recovered": recovered
+        "recovered": get_patients_list(recovered)
     })
-
-@login_required(redirect_field_name="doctor_login", login_url="/doctor/login")
-def patient(request, patient_id):
-    """Loads all information related to a certian patient and allows to doctor to add complications
-    parameters:
-        -request
-        -patient_id: the id of the patient object we have to use
-        
-    returns: if GET, it returns the patient page with required patient information. If the doctor
-    adds a complication to the user it adds the complication to the user's current complications
-    and redirects to the doctor patient function"""
-
-    if request.method == "GET":
-        #get appointment and patient related information
-        try:
-            patient = Patient.objects.get(pk=patient_id)
-            appointment = patient.appointments.order_by("-date").first() 
-            complications = Complication.objects.all() 
-            doctor = Doctor.objects.get(user=request.user)     
-        except Appointment.DoesNotExist:
-            return render(request, "patients/error.html", {
-                "error": "You have no appointments yet"
-            })
-        except Patient.DoesNotExist:
-            raise Http404("Patient matching appointment id not found!")
-
-        #age calculation
-        patient_age = age_calculation(patient.user.date_of_birth)
-        doctor_age = age_calculation(doctor.user.date_of_birth)
-
-        #symptom categorization
-        symptoms = patient.symptoms.all()
-        arranged_symptoms = arrange_symptoms(symptoms)
-
-        return render(request, "patients/appointment.html", {
-            "nature": "Patient",
-            "doctor": doctor,
-            "appointment": appointment,
-            "patient": patient,
-            "patient_age": patient_age,
-            "doctor_age": doctor_age,
-            "common": arranged_symptoms[0],
-            "less_common": arranged_symptoms[1],
-            "serious": arranged_symptoms[2],
-            "old_appointments": patient.appointements.all(),
-            "complications": complications
-        })
-
-    else:
-        #when a user adds a complication to the appointment
-        complication = request.POST["complication"]
-
-        #get patient object
-        try:
-            patient = Patient.objects.get(pk=patient_id)
-        except Patient.DoesNotExist:
-            raise Http404("Patient adding Complication does not exist")
-
-        #add complication to patients complication lists
-        patient.complications.add(complication)
-
-        #redirect the user back
-        return HttpResponseRedirect(reverse("doctor_patient"))
 

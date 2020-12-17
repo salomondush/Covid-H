@@ -1,0 +1,112 @@
+{% extends "doctors/layout.html" %}
+
+{% block title %}
+    {{patient}}
+{% endblock%}
+
+{% block body %}    
+<div id="patient-page">
+    <main>
+        <div class="appointment-page">
+            <div id="checkup-appointment">
+                <div class="row">
+                    <div id="person" class="col-lg-4">
+                        <div id="user" class="center">
+                            {% load static %}
+                            <img src="{% static 'doctors/img/u.png' %}" alt="" width="75" height="75">
+                            <article><b>{{patient}}</b></article>
+                            <div class="text-muted">Age: {{patient_age}}</div>
+                        
+                            <a href="{% url 'get_patient' patient.id %}" id="display-patient-information">Display Patient Information</a>
+                        </div>
+                        <hr>
+                        <!--NOTE: this div stores the patient id that is used by some javascript functions. Do Not Change It-->
+                        <div id="display-medications" data-value="{{patient.id}}" class="btn btn-success" style="width: 100%">Medications</div>
+                        <div id="information-medications">
+                            <div id="information"><a id="edit-user-information" href="javascript:void(0)">Edit</a></span>
+                                <h5>Information:</h5>
+                                <!--the value attribute of data here helps us distinguish from editing patient info to doctor info-->
+                                <div data-value="no" class="updatable-info">
+                                    <p><b>Email:</b> <span id="user-email" class="text-muted">{{patient.user.email}}</span></p>
+                                    <p><b>Phone number:</b>  <span id="user-phone" class="text-muted">+{{patient.user.phone}}</span></p>
+                                    <p><b>Gender:</b> <span id="user-gender" class="text-muted">{{patient.user.gender}}</span></p>
+                                </div>
+                                <p><b>Patient ID:</b>  <span id="user-id" class="text-muted">{{patient.id}}</span></p>
+                                <p><b>Initial Appointment:</b>  <span class="text-muted">{{patient.initial_date}}</span></p>
+                                <p><b>Last Visit:</b>  <span class="text-muted">{{patient.last_visit}}</span></p>
+                                <p><b>Appointment Date:</b>  <span class="text-muted">{{patient.appointments}}</span></p>
+                            </div>  
+                        </div>
+                    </div>
+                    <div id="details" class="col-lg-7">
+                        <div id="symptoms" class="row">
+                            <div class="col-lg-4 bg-primary">
+                                <p style="color: white">Most common</p>
+                                <ul class="list-group">
+                                    {% for symptom in common %}
+                                        <li class="list-group-item">{{symptom}}.<a class="remove float-right" href="javascript:void(0)">remove</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col-lg-4 bg-primary">
+                                <p style="color: white">Less common</p>
+                                <ul class="list-group">
+                                    {% for symptom in less_common %}
+                                        <li class="list-group-item">{{symptom}}.<a class="remove float-right" href="javascript:void(0)">remove</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col-lg-3 bg-primary">
+                                <p style="color: white">Serious</p>
+                                <ul class="list-group">
+                                    {% for symptom in serious %}
+                                        <li class="list-group-item">{{symptom}}.<a class="remove float-right" href="javascript:void(0)">remove</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% if patient_complication %}
+                        <p class="center"><b>Complication</b></p>
+                        <div id="complications" class="row">
+                            {% for complication in patient_complications %}
+                                    <li>{{complication}}</li>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="row" id="option-buttons">
+                            <div class="col-lg-6">
+                                <a href="{% url 'get_patient' patient.id %}"><button type="button" class="btn btn-success" id="new-symptom-complication-form">+ add a Complication/symptom</button></a>
+                            </div>   
+                            <div class="col-lg-5">
+                                <button data-value="{{patient.id}}" id="see-previous-appointments" type="button" class="btn btn-secondary">Previous appointments</button>
+                            </div>                         
+                        </div>
+                        <div id="add-complication-see-appointments">
+                            <!--this will be relocated to a handlebars template: adding a symptom or complication should refresh the page-->                           
+                            <div class="add-sickness form">
+                                <form  class="form-group" action="{% url 'get_patient' patient.id %}" method='post'>
+                                    {% csrf_token %}
+                                    <select class="form-control" name="complication" >
+                                        {% for complication in complications %}
+                                            <option value="{{complication}}">{{complication}}</option>
+                                        {% endfor %}
+                                        <option value="None">None</option>
+                                    </select>
+                                    <select class="form-control" name="symptom">
+                                        {% for symptom in symptoms %}
+                                            <option value="{{symptom}}">{{symptom}}</option>
+                                        {% endfor %}
+                                        <option value="None">None</option>
+                                    </select>
+                                    <input name="id" value="{{patient.id}}" class="form-control" type="text"  placeholder="{{patient.id}}" disabled>
+                                    <button type="submit" class="btn btn-success add">+ Symptom/Complication</button>
+                                </form>
+                            </div>                                    
+                        </div>           
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

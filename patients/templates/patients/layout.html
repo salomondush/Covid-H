@@ -9,6 +9,7 @@
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
         <script src="{% static 'patients/js/patient.js' %}"></script>
         <link rel="shortcut icon" href="">
         <title>Patients</title>
@@ -42,6 +43,27 @@
               </ul>
             </div>
         </nav>
+        <!--Template for displaying patient personal information-->
+    <script id="updated-user-information-template" type="text/x-handlebars-template">
+        {% verbatim %}
+        <div id="updated-information">
+            <p><b>Email:</b> <span class="text-muted">{{email}}</span></p>
+            <p><b>Phone number:</b>  <span class="text-muted">+{{phone}}</span></p>
+            <p><b>Gender:</b> <span class="text-muted">{{gender}}</span></p>
+        </div>  
+        {% endverbatim %}
+    </script>
+    <!--Template for editing user personal information-->
+    <script type="text/x-handlebars-template" id="user-edit-template">
+        {% verbatim %}
+            <form id="update-user-info" class="form-group" action="">
+                <input name="email" class="form-control" id="email" type="text" value="{{email}}" placeholder="New Email">           
+                <input name="phone number" class="form-control" id="phone" type="number" value="{{phone}}" placeholder="New Phone">         
+                <input name="gender" class="form-control" id="gender" type="text" value="{{gender}}" placeholder="gender">
+                <button type="submit" class="btn btn-success">Update</button>
+            </form>
+        {% endverbatim %}
+    </script>
     </head>
     <body>
         {% block body %}
