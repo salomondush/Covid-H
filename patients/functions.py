@@ -2,7 +2,7 @@ from common.models import *
 from django.http import Http404
 import requests
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 def cases(country="Rwanda"):
     """generates data related to current covid-19 situation depending on cases
@@ -221,24 +221,24 @@ def retrieve_patient_info(request, id):
     }
 
 def get_appointment_date(condition, complication):
-    """generate appointment to the patient depending on conditino and complication
-    parameters
-        - conditino
-        - complicatoin
+    """generate appointment to the patient depending on condition and complication
+    parameters. Critical patients are given in-1-day appointments, and other are given
+    int-3-day appointments.
+        - condition
+        - complication
     returns: appointment date depending on the user's condition
     """
-    today = date.today()
-
     #a user should be assumed as critical if there's a complication
     if complication:
         condition = "Critical"
 
     #set critical and regular appointments
     if condition == "Critical":
-        appointment = date(today.year, today.month, (today.day + 1))
+        appointment = date.today() + timedelta(days=1)
     else:
-        appointment = date(today.year, today.month, (today.day + 5))
+        appointment = date.today() + timedelta(days=3)
     return appointment
+
 
 
 
