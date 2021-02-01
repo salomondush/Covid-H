@@ -4,6 +4,7 @@ In times of the novel Coronavirus pandemic, we have seen the introduction of dif
 The project runs on the Django python web framwork, javascript on the frontend, and a Sqlite3 default database. It also utilises Postman covid API to incorporate updated covid-19 information worldwide. Also, all web-pages are mobile responsive.
 
 ## installation
+- You need to have django and python3 installed before the following steps.
 - Install required python packages inorder to run this web application by running ```pip3 install -r requirements.txt```
 - Run the below commands in order to make and apply migrations ```python3 manage.py makemigrations``` and 
 ```python3 manage.py migrate```
